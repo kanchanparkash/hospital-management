@@ -1,5 +1,6 @@
 package com.examples.hospital.controller;
 
+import com.examples.hospital.model.Patient;
 import com.examples.hospital.repository.PatientRepository;
 import com.examples.hospital.view.PatientView;
 
@@ -14,5 +15,12 @@ public class HospitalController {
 
 	public void allPatients() {
 		patientView.showAllPatients(patientRepository.findAll());
+	}
+
+	public void newPatient(Patient patient) {
+		if (patientRepository.findById(patient.getId()) == null) {
+			patientRepository.save(patient);
+			patientView.patientAdded(patient);
+		}
 	}
 }

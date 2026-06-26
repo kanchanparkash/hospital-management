@@ -7,4 +7,6 @@ import com.examples.hospital.model.Patient;
 public interface PatientView {
 
 	void showAllPatients(List<Patient> patients);
+
+	void patientAdded(Patient patient);
 }
