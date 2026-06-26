@@ -1,8 +1,10 @@
 package com.examples.hospital.controller;
 
 import static java.util.Arrays.asList;
+import static org.mockito.Mockito.ignoreStubs;
 import static org.mockito.Mockito.inOrder;
 import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.verifyNoMoreInteractions;
 import static org.mockito.Mockito.when;
 
 import java.util.List;
@@ -61,5 +63,17 @@ public class HospitalControllerTest {
 		InOrder inOrder = inOrder(patientRepository, patientView);
 		inOrder.verify(patientRepository).save(patient);
 		inOrder.verify(patientView).patientAdded(patient);
+	}
+
+	@Test
+	public void testNewPatientWhenPatientAlreadyExists() {
+		Patient patientToAdd = new Patient("1", "test");
+		Patient existingPatient = new Patient("1", "name");
+		when(patientRepository.findById("1"))
+			.thenReturn(existingPatient);
+		hospitalController.newPatient(patientToAdd);
+		verify(patientView)
+			.showError("Already existing patient with id 1", existingPatient);
+		verifyNoMoreInteractions(ignoreStubs(patientRepository));
 	}
 }
