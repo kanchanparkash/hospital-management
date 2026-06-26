@@ -1,6 +1,7 @@
 package com.examples.hospital.controller;
 
 import static java.util.Arrays.asList;
+import static org.mockito.Mockito.inOrder;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -9,6 +10,7 @@ import java.util.List;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
+import org.mockito.InOrder;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
@@ -48,5 +50,16 @@ public class HospitalControllerTest {
 		hospitalController.allPatients();
 		verify(patientView)
 			.showAllPatients(patients);
+	}
+
+	@Test
+	public void testNewPatientWhenPatientDoesNotAlreadyExist() {
+		Patient patient = new Patient("1", "test");
+		when(patientRepository.findById("1"))
+			.thenReturn(null);
+		hospitalController.newPatient(patient);
+		InOrder inOrder = inOrder(patientRepository, patientView);
+		inOrder.verify(patientRepository).save(patient);
+		inOrder.verify(patientView).patientAdded(patient);
 	}
 }
